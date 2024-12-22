@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/dirvine/blsttc/compare/v3.0.0...v4.0.0) (2024-12-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **repr:** switch internal representation to Affine
+* provide context information within Error::NotEnoughShares type
+* the `Eq`, `Serialize` and `Deserialize` derivations are removed from the error type
+because the derived hex error doesn't implement these.
+
+I'm finding myself repeating this code several times in places where I'm using the BLS library, so I
+thought it would be useful to just have it directly on these types.
+* ensure version bump to 5.0.0
+* **api:** changes to public API
+
+### Features
+
+* Add Python bindings for BLSTTC ([b7c521e](https://github.com/dirvine/blsttc/commit/b7c521ec02ec5af0a1d4c02d9da04ed4b4accc3b))
+* **repr:** switch internal representation to Affine ([f52d1f0](https://github.com/dirvine/blsttc/commit/f52d1f06a070daace955c6685762e31242e183fc))
+* accept Borrow<SignatureShare> for ::combine_signatures() to ease use of Vec<SignatureShare> ([fbd24a7](https://github.com/dirvine/blsttc/commit/fbd24a72d2e1bedf7571101346ea26f4d21bcb75))
+* add derive_child for SecretKey and PublicKey ([524dd27](https://github.com/dirvine/blsttc/commit/524dd278260859a96b361b3453a8ecbed9f55271))
+* add From<G1> for PublicKey ([a93c8e6](https://github.com/dirvine/blsttc/commit/a93c8e6c2359ec0bdf3bb8719cb46546ba076595))
+* add g2_from_be_bytes and g2_to_be_bytes ([47f0102](https://github.com/dirvine/blsttc/commit/47f01025271ef6acb6fd18884d8e279f3618505b))
+* add generic partial eq and from impls ([7a198d3](https://github.com/dirvine/blsttc/commit/7a198d372dc9fba2ef72be7dbe11f95fc93c85f3))
+* allow utils to be used publicly ([ce8e969](https://github.com/dirvine/blsttc/commit/ce8e96953a38a6ee83ce9eafec004df89fd1b91c))
+* check pubkey for 0 to prevent rogue key attack variant ([108c02c](https://github.com/dirvine/blsttc/commit/108c02cdb8aef93172030b740c8d8af521deb17b))
+* derive [De-]Serialize on Error ([525cc71](https://github.com/dirvine/blsttc/commit/525cc7171ca9dc375b25ba5cb0caafdae3949046))
+* From<G1Affine> for PublicKey ([4c75c8a](https://github.com/dirvine/blsttc/commit/4c75c8aa11b07597c237bd13c557001cb808aa7e))
+* provide context information within Error::NotEnoughShares type ([b95d347](https://github.com/dirvine/blsttc/commit/b95d34764301e08b1fe855d7c600327cb083b08d))
+* provide hex conversion utilities ([2509f30](https://github.com/dirvine/blsttc/commit/2509f30c942115b8dbcd1e0ab9f82a0b835f4437))
+* remove getrandom feature list for wasm ([2f2b021](https://github.com/dirvine/blsttc/commit/2f2b021a8fe885537a4d83b47d088c7342d16254))
+* replace bls12_381 with blstrs ([aca04ec](https://github.com/dirvine/blsttc/commit/aca04ec8f2e2fa066fc890bb87c9a3f1c115f9bf))
+* SecretKeySet and PublicKeySet derive_child ([fcd174f](https://github.com/dirvine/blsttc/commit/fcd174f9bf92baec153f85c5765d51a358bfca31))
+* simple example for generating a keypair ([c3cf652](https://github.com/dirvine/blsttc/commit/c3cf65207561c4021ced8d179e5e56bd619da43c))
+* test that reproduces the attack ([98876fc](https://github.com/dirvine/blsttc/commit/98876fc3926961ab1d664c5dbcbfce48542f0bfb))
+
+
+### Bug Fixes
+
+* fixing clippy issues ([ca691ab](https://github.com/dirvine/blsttc/commit/ca691ab036205ed4011969ad525ace14a4389b10))
+* fixing fmt issues ([9a84f33](https://github.com/dirvine/blsttc/commit/9a84f337b87615776c3758e3dd3c00771a141e09))
+* **repr:** don't alias G{1,2}Affine with G1 G2 ([9dffa7c](https://github.com/dirvine/blsttc/commit/9dffa7cd45d85a8eb3dd65b39a28bfe82bfe31fa))
+* **SecretKey:** adding PartilaOrd and Ord attributes for the SecretKey ([0e72eee](https://github.com/dirvine/blsttc/commit/0e72eee2f45b9b68a23dcb963b391e79bf2c3ade))
+
+
+* update readme ([8251bb2](https://github.com/dirvine/blsttc/commit/8251bb2b25239cb78f3d5f58a50c624142b2afe0))
+* **api:** removing calls to unwrap(), returning Result from all apis ([91db096](https://github.com/dirvine/blsttc/commit/91db096613191175e757f1e740fedbf5afa56217))
+
 ### [8.0.2](https://github.com/maidsafe/blsttc/compare/v8.0.1...v8.0.2) (2023-02-09)
 
 
