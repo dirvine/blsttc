@@ -7,7 +7,7 @@ name = "blsttc"
 dynamic = ["version"]
 description = "BLS threshold token cryptography"
 authors = [{ name = "MaidSafe Developers", email = "dev@maidsafe.net" }]
-readme = "README.md"
+readme = "README_PYTHON.md"
 requires-python = ">=3.8"
 license = { text = "MIT OR Apache-2.0" }
 keywords = ["cryptography", "BLS", "threshold"]
