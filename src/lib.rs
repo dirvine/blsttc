@@ -16,6 +16,7 @@ mod convert;
 mod into_fr;
 mod secret;
 mod util;
+mod python;
 
 pub mod error;
 pub mod poly;
@@ -416,6 +417,12 @@ impl SecretKey {
     /// RNG.
     pub fn random() -> Self {
         rand::random()
+    }
+
+    /// Creates a new deterministic SecretKey from a seed.
+    pub fn from_seed(seed: &[u8]) -> Self {
+        let mut rng = ChaChaRng::from_seed(sha3_256(seed));
+        rng.sample(Standard)
     }
 
     /// Returns the matching public key.
@@ -1540,7 +1547,7 @@ mod tests {
             ],
         ];
         for vector in vectors {
-            // read SecretKeyShare from hex
+            // get parent keypair
             let sks_bytes = hex::decode(vector[0])?;
             let sks = SecretKeySet::from_bytes(sks_bytes).expect("invalid secret key set bytes");
             // check secret key
@@ -1724,30 +1731,22 @@ mod tests {
         ];
         for vector in vectors {
             // get parent keypair
-            let sk_vec = hex::decode(vector[0])?;
-            let mut sk_bytes = [0u8; SK_SIZE];
-            sk_bytes[..SK_SIZE].clone_from_slice(&sk_vec[..SK_SIZE]);
-            let sk = SecretKey::from_bytes(sk_bytes).expect("invalid secret key bytes");
-            let pk = sk.public_key();
-            let pk_hex = &format!("{}", HexFmt(&pk.to_bytes()));
-            assert_eq!(pk_hex, vector[1]);
-            // test derivation for all the indexes
-            let children = (vector.len() - 2) / 3;
-            for i in 0..children {
-                let v = 2 + i * 3;
-                // get index
-                let index = hex::decode(vector[v])?;
-                // derive child secret key at this index
-                let sk_child = sk.derive_child(&index);
-                let sk_child_hex = &format!("{}", HexFmt(&sk_child.to_bytes()));
-                assert_eq!(sk_child_hex, vector[v + 1]);
-                // derive child public key at this index
-                let pk_child = pk.derive_child(&index);
-                let pk_child_hex = &format!("{}", HexFmt(&pk_child.to_bytes()));
-                assert_eq!(pk_child_hex, vector[v + 2]);
-                // confirm these keys are a pair
-                assert_eq!(sk_child.public_key(), pk_child);
-            }
+            let sks_bytes = hex::decode(vector[0])?;
+            let sks = SecretKeySet::from_bytes(sks_bytes).expect("invalid secret key set bytes");
+            // check secret key
+            let sk = sks.secret_key();
+            let sk_hex = &format!("{}", HexFmt(&sk.to_bytes()));
+            assert_eq!(sk_hex, vector[1]);
+            // check secret key shares
+            let sk_share_0 = sks.secret_key_share(0);
+            let sk_share_0_hex = &format!("{}", HexFmt(&sk_share_0.to_bytes()));
+            assert_eq!(sk_share_0_hex, vector[2]);
+            let sk_share_1 = sks.secret_key_share(1);
+            let sk_share_1_hex = &format!("{}", HexFmt(&sk_share_1.to_bytes()));
+            assert_eq!(sk_share_1_hex, vector[3]);
+            let sk_share_2 = sks.secret_key_share(2);
+            let sk_share_2_hex = &format!("{}", HexFmt(&sk_share_2.to_bytes()));
+            assert_eq!(sk_share_2_hex, vector[4]);
         }
 
         Ok(())
@@ -1802,12 +1801,11 @@ mod tests {
 
     #[test]
     fn test_sk_set_derive_child() {
-        let mut rng = rand::thread_rng();
-        let sks = SecretKeySet::random(3, &mut rng);
+        let sks = SecretKeySet::random(3, &mut rand::thread_rng());
         // Deriving from master is the same as deriving a set
         // and getting the master from the derived set
         let mut index = [0u8; 32];
-        rng.fill_bytes(&mut index);
+        rand::thread_rng().fill_bytes(&mut index);
         let msk = sks.secret_key();
         let msk_child = msk.derive_child(&index);
         assert_ne!(msk, msk_child);
@@ -1825,13 +1823,12 @@ mod tests {
 
     #[test]
     fn test_pk_set_derive_child() {
-        let mut rng = rand::thread_rng();
-        let sks = SecretKeySet::random(3, &mut rng);
+        let sks = SecretKeySet::random(3, &mut rand::thread_rng());
         let pks = sks.public_keys();
         // Deriving from master is the same as deriving a set
         // and getting the master from the derived set
         let mut index = [0u8; 32];
-        rng.fill_bytes(&mut index);
+        rand::thread_rng().fill_bytes(&mut index);
         let mpk = pks.public_key();
         let mpk_child = mpk.derive_child(&index);
         assert_ne!(mpk, mpk_child);
