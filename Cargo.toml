@@ -6,12 +6,12 @@ license = "MIT OR Apache-2.0"
 name = "blsttc"
 readme = "README.md"
 repository = "https://github.com/maidsafe/blsttc"
-version = "8.0.4"
+version = "8.0.3"
 
 [lib]
 name = "blsttc"
 path = "src/lib.rs"
-crate-type = ["cdylib", "rlib"]
+crate-type = [ "cdylib", "rlib" ]
 
 [dependencies]
 ff = "0.12.0"
@@ -19,11 +19,14 @@ group = "0.12.0"
 hex = "0.4.3"
 hex_fmt = "0.3.0"
 pairing = "0.22.0"
-pyo3 = { version = "0.20", features = ["extension-module"] }
 rand = "0.8.5"
 rand_chacha = "0.3.1"
 thiserror = "1.0.22"
 zeroize = "1.5.7"
+
+  [dependencies.pyo3]
+  version = "0.20"
+  features = [ "extension-module" ]
 
   [dependencies.blst]
   version = "0.3.7"
